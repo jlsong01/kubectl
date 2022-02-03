@@ -305,6 +305,12 @@ func (o *EnvOptions) RunEnv() error {
 			case *v1.Secret:
 				for key := range from.Data {
 					if contains(key, o.Keys) {
+						for _, l := range key {
+							if l >= 'a' && l <= 'z' {
+								fmt.Fprintf(o.ErrOut, "warning: key %s transferred to %s\n", key, strings.ToUpper(validEnvNameRegexp.ReplaceAllString(key, "_")))
+								break
+							}
+						}
 						envVar := v1.EnvVar{
 							Name: keyToEnvName(key),
 							ValueFrom: &v1.EnvVarSource{
@@ -322,6 +328,12 @@ func (o *EnvOptions) RunEnv() error {
 			case *v1.ConfigMap:
 				for key := range from.Data {
 					if contains(key, o.Keys) {
+						for _, l := range key {
+							if l >= 'a' && l <= 'z' {
+								fmt.Fprintf(o.ErrOut, "warning: key %s transferred to %s\n", key, strings.ToUpper(validEnvNameRegexp.ReplaceAllString(key, "_")))
+								break
+							}
+						}
 						envVar := v1.EnvVar{
 							Name: keyToEnvName(key),
 							ValueFrom: &v1.EnvVarSource{
